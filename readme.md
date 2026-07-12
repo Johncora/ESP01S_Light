@@ -70,7 +70,7 @@ cd ESP01S_Light
 
 ### 2. 修改 WiFi 配置
 
-编辑 `smart_light.ino`，修改以下常量：
+编辑 `ESP01S_Light.ino`，修改以下常量：
 
 ```cpp
 const char* ssid = "你的WiFi名称";
@@ -169,7 +169,7 @@ http://192.168.x.x
 
 ```
 .
-├── smart_light.ino      # 主程序（含内嵌 HTML）
+├── ESP01S_Light.ino      # 主程序（含内嵌 HTML）
 ├── README.md            # 本文件
 └── build/               # 编译输出目录
 ```
