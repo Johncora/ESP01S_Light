@@ -64,8 +64,8 @@ arduino-cli board listall | grep esp8266
 ### 1. 克隆 或 在github下载项目zip
 
 ```bash
-git clone <your-repo-url>
-cd esp01s-smart-light
+git clone https://github.com/Johncora/ESP01S_Light
+cd ESP01S_Light
 ```
 
 ### 2. 修改 WiFi 配置
