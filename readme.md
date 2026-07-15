@@ -22,21 +22,11 @@
 
 ### 1. 安装 Arduino CLI
 
-#### macOS
+#### Windows 
 ```bash
-brew install arduino-cli
-```
-
-#### Linux
-```bash
-curl -fsSL https://raw.githubusercontent.com/arduino/arduino-cli/master/install.sh | sh
-sudo mv bin/arduino-cli /usr/local/bin/
-```
-
-#### Windows (PowerShell)
-```powershell
-Invoke-WebRequest -Uri "https://raw.githubusercontent.com/arduino/arduino-cli/master/install.ps1" -OutFile "$env:TEMP\install.ps1"
-& "$env:TEMP\install.ps1"
+1. 下载 release https://gitee.com/Johncora/ESP01S_Light/releases/download/arduino-cli-1.5.1-win64/arduino-cli_1.5.1_Windows_64bit.zip
+2. 解压 arduino-cli_1.5.1_Windows_64bit.zip 到C盘根目录
+3. 配置系统环境变量
 ```
 
 ### 2. 配置 Arduino CLI
@@ -63,11 +53,17 @@ arduino-cli board listall | grep esp8266
 
 ### 1. 克隆 或 在github下载项目zip
 
+下面操做安装 git 没安装的话 访问 https://gitee.com/Johncora/ESP01S_Light 下载 zip
+
 ```bash
 git clone https://github.com/Johncora/ESP01S_Light
 cd ESP01S_Light
 ```
-
+网络不好的话用下面这个
+``` bash
+git clone https://gitee.com/Johncora/ESP01S_Light.git
+cd ESP01S_Light
+```
 ### 2. 修改 WiFi 配置
 
 编辑 `ESP01S_Light.ino`，修改以下常量：
@@ -85,30 +81,14 @@ arduino-cli compile --fqbn esp8266:esp8266:generic .
 ```
 ### 4. 烧录固件
 
-#### 自动检测串口
-```bash
-arduino-cli upload --fqbn esp8266:esp8266:generic:eesz=1M64 -p $(arduino-cli board list | grep tty | awk '{print $1}') .
-```
-
 #### 手动指定串口
 ```bash
-# Linux/macOS
-arduino-cli upload --fqbn esp8266:esp8266:generic -p /dev/ttyUSB0 .
-
-# macOS (CH340)
-arduino-cli upload --fqbn esp8266:esp8266:generic -p /dev/tty.wchusbserial* .
-
-# macOS (CP2102 芯片)
-arduino-cli upload --fqbn esp8266:esp8266:generic -p /dev/tty.SLAB_USBtoUART .
-
-
-# Windows
-arduino-cli upload -p COMx --fqbn esp8266:esp8266:generic .
+arduino-cli upload -p COM8 --fqbn esp8266:esp8266:generic .
 ```
 
 #### 烧录模式接线（GPIO0 接地）
 
-烧录前将 GPIO0 与 GND 短接，然后上电或按 RST 复位：
+烧录前将 GPIO0 与 GND 短接，然后上电：
 
 ```
 GPIO0 ──┬── GND（烧录时短接）
@@ -118,16 +98,6 @@ GPIO0 ──┬── GND（烧录时短接）
 ### 5. 监控串口输出
 
 ```bash
-# Linux
-arduino-cli monitor -p /dev/ttyUSB0 --config baudrate=115200
-
-# macOS (CH340 芯片)
-arduino-cli monitor -p /dev/tty.wchusbserial* --config baudrate=115200
-
-# macOS (CP2102 芯片)
-arduino-cli monitor -p /dev/tty.SLAB_USBtoUART --config baudrate=115200
-
-# Windows
 arduino-cli monitor -p COM3 --config baudrate=115200
 ```
 ## 🚀 使用说明
