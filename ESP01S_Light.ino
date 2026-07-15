@@ -343,10 +343,13 @@ const char* htmlPage = R"rawliteral(<!DOCTYPE html>
             border: 1px solid rgba(255,255,255,0.65); border-radius: 14px;
             box-shadow: 0 8px 32px rgba(0,0,0,0.08);
             max-height: 0; overflow: hidden; opacity: 0;
-            transition: all 0.25s cubic-bezier(0.32,0.72,0,1);
+            transition: opacity 0.25s cubic-bezier(0.32,0.72,0,1), max-height 0.25s cubic-bezier(0.32,0.72,0,1);
             z-index: 10;
         }
-        .dropdown-menu.open { max-height: 320px; opacity: 1; padding: 6px 0; }
+        .dropdown-menu.open { max-height: 140px; opacity: 1; padding: 6px 0; overflow-y: auto; -webkit-overflow-scrolling: touch; }
+        .dropdown-menu::-webkit-scrollbar { width: 4px; }
+        .dropdown-menu::-webkit-scrollbar-track { background: transparent; }
+        .dropdown-menu::-webkit-scrollbar-thumb { background: rgba(156,163,175,0.4); border-radius: 4px; }
         .dropdown-item {
             padding: 10px 14px; font-size: 14px; font-weight: 500; color: #374151;
             cursor: pointer; transition: all 0.15s; margin: 0 6px; border-radius: 10px;
