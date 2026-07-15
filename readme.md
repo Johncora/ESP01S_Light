@@ -18,6 +18,13 @@
 
 ---
 
+## 仓库地址
+
+```bash
+github https://github.com/Johncora/ESP01S_Light
+gitee  https://gitee.com/Johncora/ESP01S_Light
+```
+
 ## 🛠️ 开发环境搭建
 
 ### 1. 安装 Arduino CLI
@@ -32,34 +39,32 @@
 ### 2. 配置 Arduino CLI
 
 ```bash
-# 初始化配置
+# 1. 彻底删除 Arduino15 目录  （第一次配置跳过此命令）
+Remove-Item -Recurse -Force "$env:LOCALAPPDATA\Arduino15"
+
+# 2. 重新初始化配置
 arduino-cli config init
 
-# 添加 ESP8266 开发板索引
-arduino-cli config add board_manager.additional_urls   "https://arduino.esp8266.com/stable/package_esp8266com_index.json"
+# 3. 添加 Gitee 索引
+arduino-cli config add board_manager.additional_urls "https://gitee.com/Johncora/esp8266-arduino-mirror/raw/master/package_esp8266com_index.json"
 
-# 更新索引
+# 4. 更新索引
 arduino-cli core update-index
 
-# 安装 ESP8266 核心（3.x 版本）
+# 5. 安装 ESP8266 核心
 arduino-cli core install esp8266:esp8266@3.1.2
 
-# 验证安装
+# 6. 验证
 arduino-cli core list
-arduino-cli board listall | grep esp8266
+arduino-cli board listall | Select-String esp8266
 ```
 
 ## 📦 编译与烧录
 
 ### 1. 克隆 或 在github下载项目zip
 
-下面操做安装 git 没安装的话 访问 https://gitee.com/Johncora/ESP01S_Light 下载 zip
+下面操做需安装 git 没安装的话 访问 https://gitee.com/Johncora/ESP01S_Light 下载 zip
 
-```bash
-git clone https://github.com/Johncora/ESP01S_Light
-cd ESP01S_Light
-```
-网络不好的话用下面这个
 ``` bash
 git clone https://gitee.com/Johncora/ESP01S_Light.git
 cd ESP01S_Light
@@ -76,12 +81,11 @@ const char* password = "你的WiFi密码";
 ### 3. 编译项目
 
 ```bash
-# 编译（指定 ESP-01S 开发板）
+# 编译
 arduino-cli compile --fqbn esp8266:esp8266:generic . 
 ```
 ### 4. 烧录固件
 
-#### 手动指定串口
 ```bash
 arduino-cli upload -p COM8 --fqbn esp8266:esp8266:generic .
 ```
