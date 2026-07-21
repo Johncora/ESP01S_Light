@@ -1,5 +1,6 @@
 #include <ESP8266WiFi.h>
 #include <ESP8266WebServer.h>
+#include <EEPROM.h>
 
 // ========== WiFi 配置（STA 模式） ==========
 const char* ssid = "WiFi";
@@ -24,6 +25,17 @@ struct TimerTask {
 
 TimerTask timers[10];
 int timerCount = 0;
+
+#define EEPROM_SIZE 512
+#define EEPROM_FLAG 0x55
+
+struct SaveData {
+    uint8_t flag;
+    uint8_t count;
+    TimerTask tasks[10];
+};
+
+SaveData saveData;
 
 // ========== HTML 页面 ==========
 const char* htmlPage = R"rawliteral(<!DOCTYPE html>
@@ -672,7 +684,7 @@ const char* htmlPage = R"rawliteral(<!DOCTYPE html>
             // 每组 count 个数据，前面有 PADDING_ITEMS 组 + 顶部 padding
             const topPaddingH = ITEM_H * Math.floor(VISIBLE_ITEMS/2);
             const groupStart = topPaddingH + PADDING_ITEMS * count * ITEM_H;
-            const targetScroll = groupStart + initialValue * ITEM_H;
+            const targetScroll = groupStart + (initialValue - 2) * ITEM_H;
 
             // 先设置 scrollTop，再绑定事件
             requestAnimationFrame(() => {
@@ -1034,6 +1046,7 @@ void handlePostTimers() {
         return;
     }
     parseTimersFromBody(server.arg("plain"));
+    saveTimersToEEPROM();
     server.send(200, "text/plain", "OK");
 }
 
@@ -1086,11 +1099,58 @@ void checkTimers() {
     }
 }
 
+void saveTimersToEEPROM()
+{
+    memset(&saveData,0,sizeof(saveData));
+    
+    saveData.flag = EEPROM_FLAG;
+    saveData.count = timerCount;
+
+    for(int i=0;i<timerCount;i++)
+    {
+        saveData.tasks[i] = timers[i];
+    }
+
+    EEPROM.put(0, saveData);
+    EEPROM.commit();
+
+    Serial.println("Timers saved");
+}
+void loadTimersFromEEPROM()
+{
+    EEPROM.get(0, saveData);
+
+    if(saveData.flag != EEPROM_FLAG)
+    {
+        Serial.println("No saved timers");
+        timerCount = 0;
+        return;
+    }
+
+
+    timerCount = saveData.count;
+
+    if(timerCount > 10)
+        timerCount = 10;
+
+
+    for(int i=0;i<timerCount;i++)
+    {
+        timers[i] = saveData.tasks[i];
+    }
+
+
+    Serial.printf("Loaded %d timers\n", timerCount);
+}
 // ========== Setup & Loop ==========
 
 void setup() {
     Serial.begin(115200);
+    EEPROM.begin(EEPROM_SIZE);
+    
+    loadTimersFromEEPROM();
     delay(500);
+
     Serial.println("BOOT");
 
     pinMode(LED_PIN, OUTPUT);
